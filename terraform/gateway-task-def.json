@@ -1,0 +1,13 @@
+[
+  {
+    "name": "api-gateway",
+    "image": "<your_ecr_repo_url>/api-gateway:latest",
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080
+      }
+    ],
+    "essential": true
+  }
+]
