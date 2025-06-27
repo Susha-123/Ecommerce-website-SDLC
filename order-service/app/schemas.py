@@ -17,7 +17,7 @@ class OrderItemOut(OrderItemCreate):
     id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated for Pydantic v2
 
 class OrderOut(BaseModel):
     id: UUID
@@ -28,4 +28,4 @@ class OrderOut(BaseModel):
     items: List[OrderItemOut]
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated for Pydantic v2
