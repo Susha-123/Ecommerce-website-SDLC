@@ -1,3 +1,6 @@
+version: "3.9"
+
+services:
   api-gateway:
     build: ./api-gateway
     ports:
@@ -9,3 +12,84 @@
       - order-service
       - payment-service
       - review-service
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8001:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/auth_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "8002:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/product_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  cart-service:
+    build: ./cart-service
+    ports:
+      - "8003:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/cart_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "8004:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/order_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8005:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/payment_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  review-service:
+    build: ./review-service
+    ports:
+      - "8006:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/review_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:13
+    container_name: ecommerce-website-sdlc-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
